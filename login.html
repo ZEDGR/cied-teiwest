@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Login page</title>
+        <script src="js/jquery-2.0.3.min.js"></script>
+    </head>
+    <body>
+    <form method="post">
+        <label for="username">Username: </label><input type="text" name="username" id="username" /><br/>
+        <label for="pass">Password: </label><input type="password" name="pass" id="pass" /><br/>
+        <input type="submit" />
+    </form>
+    </body>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("input[type='submit']").click(function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: "controller.php?action=login",
+                    type: "POST",
+                    data: $("form").serialize(),
+                    beforeSend: function (xhr) {
+                        xhr.overrideMimeType("application/json; charset=utf8");
+                    }
+                }).done(function (data){
+                    if (data["loggedin"] == true)
+                    {
+                        
+                        window.location.href="admin.html";
+                    }
+                });
+            });
+        });
+    </script>
+</html>
