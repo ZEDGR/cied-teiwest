@@ -24,6 +24,10 @@
                     echo json_encode(array("loggedin" => false));
                 }
             }
+            elseif($this->gets['action'] === "logout")
+            {
+                login::logout();
+            }
         }
     }
 

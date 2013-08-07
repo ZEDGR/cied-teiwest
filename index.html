@@ -1,3 +1,31 @@
-<?php
-echo "imba tesyd app"
-?>
+<!DOCTYPE html> 
+<html>
+	<head>
+		<script>
+			if(typeof localStorage !== "undefined")
+			{
+				var session = localStorage.getItem("session");
+				var now = new Date();
+				if(session === null)
+				{
+					window.location.href="login.html";
+				}
+				else if((now.getTime() - session.getTime()) >= 1440000)
+				{
+					window.location.href="login.html";
+				}
+				else
+				{
+					window.location.href="admin.html";
+				}
+
+			}
+			else
+			{
+				alert('Your browser does not support localStorage!');
+			}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

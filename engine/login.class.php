@@ -1,5 +1,6 @@
 <?php
     require_once("db.class.php");
+    require_once("session.class.php");
     class login
     {
         public $db;
@@ -16,9 +17,18 @@
             $rows = $stmt->rowCount();
             if ($rows === 1)
             {
+                $session = new Session();
+                $session->setAdmin($user, $pass);
                 return true;
             }
             return false;
+        }
+
+        public function logout()
+        {
+            $session = new Session();
+            $session->destroy();
+            echo json_encode(array("logout" => true));
         }
     } 
 ?>

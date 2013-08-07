@@ -1,1 +1,46 @@
-Welcome admin!
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Admin Page</title>
+		<script src="js/jquery-2.0.3.min.js"></script>
+	</head>
+	<body>
+		<h3>Welcome admin!</h3>
+		<a href="#">Logout</a>
+	</body>
+	<script>
+	$(document).ready(function(){
+            $("a").click(function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: "controller.php?action=logout",
+                    beforeSend: function (xhr) {
+                        xhr.overrideMimeType("application/json; charset=utf8");
+                    }
+                }).done(function (data){
+                    if (data["logout"] === true)
+                    {
+                        
+                        window.location.href="index.html";
+                    }
+                });
+            });
+            
+            $("body").onload(function(e)){
+                e.preventDefault();
+                $.ajax({
+                    url: "controller.php?action=check",
+                    beforeSend: function (xhr) {
+                        xhr.overrideMimeType("application/json; charset=utf8");
+                    }
+                }).done(function (data){
+                    if(data['loggedin'] === true)
+                    {
+                        
+                    }
+                    
+                });
+        });
+	</script>
+</html>
+

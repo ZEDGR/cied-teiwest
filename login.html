@@ -4,6 +4,21 @@
         <meta charset="utf-8" />
         <title>Login page</title>
         <script src="js/jquery-2.0.3.min.js"></script>
+        <script>
+            if(typeof localStorage !== "undefined")
+            {
+                var session = localStorage.getItem("session");
+                var now = new Date();
+                if((now.getTime() - session.getTime()) < 1440000)
+                {
+                    window.location.href="admin.html";
+                }
+            }
+            else
+            {
+                alert('Your browser does not support localStorage!');
+            }
+        </script>
     </head>
     <body>
     <form method="post">
@@ -28,6 +43,10 @@
                     {
                         
                         window.location.href="admin.html";
+                    }
+                    else
+                    {
+                        alert("Wrong username or password!");
                     }
                 });
             });
