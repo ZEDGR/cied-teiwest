@@ -6,12 +6,14 @@
 		<script src="js/jquery-2.0.3.min.js"></script>
 	</head>
 	<body>
-		<h3>Welcome admin!</h3>
-		<a href="#">Logout</a>
+		<h3>Welcome </h3>
+		<div id="main">
+		</div>
+		<a id="logout" href="#">Logout</a>
 	</body>
 	<script>
 	   $(document).ready(function(){
-            $("a").click(function(e){
+            $("a#logout").click(function(e){
                 e.preventDefault();
                 $.ajax({
                     url: "controller.php?action=logout",
@@ -26,10 +28,48 @@
                     }
                 });
             });
+            
+            $("div#main").on("click", "a#menu", function(e) {
+                $("div#main").html("<p>Food!</p><form action='post' enctype='multipart/form-data'><label for='menuform'>Menu: </label><input type='file' name='menuform' id='menuform' value='Upload' /><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+            });
+            
+            $("div#main").on("click", "a#schedule", function(e) {
+                $("div#main").html("<p>No Route to Host!</p><form action='post' enctype='multipart/form-data'><label for='scheduleform'>Menu: </label><input type='file' name='scheduleform' id='scheduleform' /><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+            });
+            
+            $("div#main").on("click", "a#announcements", function(e) {
+                $("div#main").html("<p>Πάρτι</p><form action='post' enctype='multipart/form-data'><label for='announcementsform'>Menu: </label><textarea name='announcementsform' id='announcementsform'></textarea><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+            });
+         
+        });
+        
+        $("div#main").on("click", "input[type=file]", function(e) {
+            var formData = new FormData($("form")[0]);
+            $.ajax({
+                url: 'controller.php?action=upload',  //Server script to process data
+                type: 'POST',
+                xhr: function() {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                return myXhr;
+            },
+            //Ajax events
+            beforeSend: beforeSendHandler,
+            success: completeHandler,
+            error: errorHandler,
+            // Form data
+            data: formData,
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+        });
+        
+        $("div#main").on("click", "a#back", function (e) {
+                $("div#main").html(mainMenu);
         });
             
-        $(window).load(function(e) {
-            e.preventDefault();
+        $(document).ready(function(e) {
             $.ajax({
                 url: "controller.php?action=checklogin",
                 beforeSend: function (xhr) {
@@ -41,8 +81,23 @@
                     localStorage.removeItem("session");
                     window.location.href = "login.html";
                 }
+                else
+                {                    
+                    $("div#main").html(mainMenu);
+                }
             });
         });
+	
+	var mainMenu = "<table>\
+	<tr>\
+	<td><a id='menu' href='#'>Menu Λέσχης</a></td>\
+	<td><a id='schedule' href='#'>Δρομολόγια</a></td>\
+	</tr>\
+	<tr>\
+	<td colspan='2'><a id='announcements' href='#'>Ανακοινώσεις Σπουδαστικού</a></td>\
+	</tr>\
+	</table>";
+	
 	</script>
 </html>
 

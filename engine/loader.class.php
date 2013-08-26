@@ -3,26 +3,31 @@
     class Loader
     {
     
-        public $posts;
-        public $gets;
+        public $post;
+        public $get;
     
         public function __construct($getRequests, $postRequests)
         {
-            $this->gets = $getRequests;
-            $this->posts = $postRequests;
+            $this->get = $getRequests;
+            $this->post = $postRequests;
         
-            if($this->gets['action'] === "login")
+            if($this->get['action'] === "login")
             {
                 $login = new Login();
                 $result = $login->checkUserPass($postRequests['username'], $postRequests['pass']);
                 echo json_encode(array("loggedin" => $result));
             }
-            elseif($this->gets['action'] === "checklogin")
+            elseif($this->get['action'] === "checklogin")
             {
                 $session = new Session();
                 echo json_encode(array("loggedin" => $session->isLoggedin()));
             }
-            elseif($this->gets['action'] === "logout")
+	    elseif($this->get['action'] === "adminpage")
+	    {
+		$adminPage = new AdminPage();
+		echo json_encode();
+	    }
+            elseif($this->get['action'] === "logout")
             {
                 login::logout();
             }
