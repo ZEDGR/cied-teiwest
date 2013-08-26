@@ -1,7 +1,7 @@
 <?php
     require_once("db.class.php");
     require_once("session.class.php");
-    class login
+    class Login
     {
         public $db;
         

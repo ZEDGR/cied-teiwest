@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+        <meta charset="utf-8" />
 		<title>Admin Page</title>
 		<script src="js/jquery-2.0.3.min.js"></script>
 	</head>
@@ -9,7 +10,7 @@
 		<a href="#">Logout</a>
 	</body>
 	<script>
-	$(document).ready(function(){
+	   $(document).ready(function(){
             $("a").click(function(e){
                 e.preventDefault();
                 $.ajax({
@@ -18,28 +19,27 @@
                         xhr.overrideMimeType("application/json; charset=utf8");
                     }
                 }).done(function (data){
-                    if (data["logout"] === true)
-                    {
-                        
-                        window.location.href="index.html";
+                    if (data["logout"])
+                    {    
+                        window.location.href = "login.html";
                     }
                 });
             });
+        });
             
-            $("body").onload(function(e)){
-                e.preventDefault();
-                $.ajax({
-                    url: "controller.php?action=check",
-                    beforeSend: function (xhr) {
-                        xhr.overrideMimeType("application/json; charset=utf8");
-                    }
-                }).done(function (data){
-                    if(data['loggedin'] === true)
-                    {
-                        
-                    }
-                    
-                });
+        $(window).load(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "controller.php?action=checklogin",
+                beforeSend: function (xhr) {
+                    xhr.overrideMimeType("application/json; charset=utf8");
+                }
+            }).done(function (data){
+                if (!data['loggedin'])
+                {
+                    window.location.href = "login.html";
+                }
+            });
         });
 	</script>
 </html>

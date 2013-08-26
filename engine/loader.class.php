@@ -1,6 +1,6 @@
 <?php
     require_once("login.class.php");
-    class loader
+    class Loader
     {
     
         public $posts;
@@ -13,16 +13,14 @@
         
             if($this->gets['action'] === "login")
             {
-                $login = new login();
+                $login = new Login();
                 $result = $login->checkUserPass($postRequests['username'], $postRequests['pass']);
-                if($result)
-                {
-                    echo json_encode(array("loggedin" => true));
-                }
-                else
-                {
-                    echo json_encode(array("loggedin" => false));
-                }
+                echo json_encode(array("loggedin" => $result));
+            }
+            elseif($this->gets['action'] === "checklogin")
+            {
+                $session = new Session();
+                echo json_encode(array("loggedin" => $session->isLoggedin()));
             }
             elseif($this->gets['action'] === "logout")
             {

@@ -9,7 +9,7 @@
             {
                 var session = localStorage.getItem("session");
                 var now = new Date();
-                if((now.getTime() - session.getTime()) < 1440000)
+                if(session !== null && (now.getTime() - session.getTime()) < 1440000)
                 {
                     window.location.href="admin.html";
                 }
@@ -39,14 +39,18 @@
                         xhr.overrideMimeType("application/json; charset=utf8");
                     }
                 }).done(function (data){
-                    if (data["loggedin"] == true)
+                    if (typeof localStorage !== "undefined" && data['loggedin'])
                     {
-                        
-                        window.location.href="admin.html";
+                        localStorage.setItem("session", new Date());
+                        window.location.href = "admin.html";
+                    }
+                    else if (!data['loggedin'])
+                    {
+                        alert('Wrong Username or Password!');
                     }
                     else
                     {
-                        alert("Wrong username or password!");
+                        alert('Your browser does not support localStorage!');
                     }
                 });
             });

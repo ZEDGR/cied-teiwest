@@ -1,6 +1,6 @@
 <?php
 	require_once("session.class.php");
-	class adminpage
+	class Adminpage
 	{
 
 		function getPage()

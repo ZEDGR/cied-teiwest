@@ -2,21 +2,17 @@
 <html>
 	<head>
 		<script>
-			if(typeof localStorage !== "undefined")
+			if (typeof localStorage !== "undefined")
 			{
 				var session = localStorage.getItem("session");
 				var now = new Date();
-				if(session === null)
+				if(session === null || (now.getTime() - session.getTime()) >= 1440000)
 				{
-					window.location.href="login.html";
-				}
-				else if((now.getTime() - session.getTime()) >= 1440000)
-				{
-					window.location.href="login.html";
+					window.location.href = "login.html";
 				}
 				else
 				{
-					window.location.href="admin.html";
+					window.location.href = "admin.html";
 				}
 
 			}
