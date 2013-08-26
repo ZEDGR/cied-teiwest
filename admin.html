@@ -20,7 +20,8 @@
                     }
                 }).done(function (data){
                     if (data["logout"])
-                    {    
+                    {
+                        localStorage.removeItem("session");    
                         window.location.href = "login.html";
                     }
                 });
@@ -37,6 +38,7 @@
             }).done(function (data){
                 if (!data['loggedin'])
                 {
+                    localStorage.removeItem("session");
                     window.location.href = "login.html";
                 }
             });

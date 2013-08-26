@@ -6,7 +6,7 @@
 			{
 				var session = localStorage.getItem("session");
 				var now = new Date();
-				if(session === null || (now.getTime() - session.getTime()) >= 1440000)
+				if(session === null || (now.getTime() - session) >= 1440000)
 				{
 					window.location.href = "login.html";
 				}

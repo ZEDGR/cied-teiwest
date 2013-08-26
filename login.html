@@ -9,7 +9,7 @@
             {
                 var session = localStorage.getItem("session");
                 var now = new Date();
-                if(session !== null && (now.getTime() - session.getTime()) < 1440000)
+                if(session !== null && (now.getTime() - session) < 1440000)
                 {
                     window.location.href="admin.html";
                 }
@@ -27,7 +27,7 @@
         <input type="submit" />
     </form>
     </body>
-    <script type="text/javascript">
+    <script>
         $(document).ready(function(){
             $("input[type='submit']").click(function(e){
                 e.preventDefault();
@@ -41,7 +41,7 @@
                 }).done(function (data){
                     if (typeof localStorage !== "undefined" && data['loggedin'])
                     {
-                        localStorage.setItem("session", new Date());
+                        localStorage.setItem("session", new Date().getTime());
                         window.location.href = "admin.html";
                     }
                     else if (!data['loggedin'])
