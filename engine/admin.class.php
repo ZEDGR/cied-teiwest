@@ -8,6 +8,10 @@
 			echo json_encode(array("name" => $_SESSION['user']));
 		}
 		
+		function fileUpload()
+		{
+		    
+		}
 	}
 
 ?>

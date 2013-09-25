@@ -46,7 +46,7 @@
         $("div#main").on("click", "input[type=file]", function(e) {
             var formData = new FormData($("form")[0]);
             $.ajax({
-                url: 'controller.php?action=upload',  //Server script to process data
+                url: 'controller.php?action=fileupload',  //Server script to process data
                 type: 'POST',
                 xhr: function() {  // Custom XMLHttpRequest
                 var myXhr = $.ajaxSettings.xhr();

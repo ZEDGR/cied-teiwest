@@ -22,11 +22,11 @@
                 $session = new Session();
                 echo json_encode(array("loggedin" => $session->isLoggedin()));
             }
-	    elseif($this->get['action'] === "adminpage")
-	    {
-		$adminPage = new AdminPage();
-		echo json_encode();
-	    }
+	        elseif($this->get['action'] === "fileupload")
+	        {
+		        $adminPage = new AdminPage();
+		        $adminPage->fileUpload($_FILES);
+	        }
             elseif($this->get['action'] === "logout")
             {
                 login::logout();
