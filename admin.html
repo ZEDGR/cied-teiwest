@@ -7,7 +7,7 @@
 	</head>
 	<body>
 		<h3>Welcome </h3>
-		<div id="main">
+		<div id="main" onload="mainMenu()">
 		</div>
 		<a id="logout" href="#">Logout</a>
 	</body>
@@ -30,44 +30,41 @@
             });
             
             $("div#main").on("click", "a#menu", function(e) {
-                $("div#main").html("<p>Food!</p><form action='post' enctype='multipart/form-data'><label for='menuform'>Menu: </label><input type='file' name='menuform' id='menuform' value='Upload' /><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+                $("div#main").html("<p>Food!</p><form id='imageupload' method='post' 'enctype='multipart/form-data'><label for='menuform'>Menu: </label><input type='file' name='foodmenu' /><input type='submit' value='Υποβολή'/></form><a id='back' href='#'>Επιστροφή</a>");
             });
             
             $("div#main").on("click", "a#schedule", function(e) {
-                $("div#main").html("<p>No Route to Host!</p><form action='post' enctype='multipart/form-data'><label for='scheduleform'>Menu: </label><input type='file' name='scheduleform' id='scheduleform' /><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+                $("div#main").html("<p>No Route to Host!</p><form id='imageupload' method='post' enctype='multipart/form-data'><label for='scheduleform'>Menu: </label><input type='file' name='buschedule' /><input type='submit' value='Υποβολή'/></form><a id='back' href='#'>Επιστροφή</a>");
             });
             
             $("div#main").on("click", "a#announcements", function(e) {
-                $("div#main").html("<p>Πάρτι</p><form action='post' enctype='multipart/form-data'><label for='announcementsform'>Menu: </label><textarea name='announcementsform' id='announcementsform'></textarea><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+                $("div#main").html("<p>Πάρτι</p><form id='announce' method='post'><label for='announcementsform'>Menu: </label><textarea name='announcementsform'></textarea><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
             });
          
         });
         
-        $("div#main").on("click", "input[type=file]", function(e) {
+        $("div#main").on("submit", "#imageupload", function(e) {
+            e.preventDefault();
             var formData = new FormData($("form")[0]);
             $.ajax({
-                url: 'controller.php?action=fileupload',  //Server script to process data
+                url: 'controller.php?action=fileupload',
                 type: 'POST',
-                xhr: function() {  // Custom XMLHttpRequest
-                var myXhr = $.ajaxSettings.xhr();
-                return myXhr;
-            },
-            //Ajax events
-            beforeSend: beforeSendHandler,
-            success: completeHandler,
-            error: errorHandler,
-            // Form data
-            data: formData,
-            //Options to tell jQuery not to process data or worry about content-type.
-            cache: false,
-            contentType: false,
-            processData: false
-        });
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false
+            }).done(function (data){
+                alert(data);
+            });
         });
         
         $("div#main").on("click", "a#back", function (e) {
                 $("div#main").html(mainMenu);
         });
+
+        /*$("div#main").on("load", function (e) {
+                $("div#main").html(mainMenu);
+        });*/
             
         $(document).ready(function(e) {
             $.ajax({
