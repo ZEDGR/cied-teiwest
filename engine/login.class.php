@@ -4,12 +4,12 @@
     class Login
     {
         public $db;
-        
+
         public function __construct()
         {
             $this->db = new db();
         }
-        
+
         public function checkUserPass($user, $pass)
         {
             $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ? AND password = ?");

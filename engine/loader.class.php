@@ -1,38 +1,37 @@
 <?php
-    require_once("login.class.php");
-    require_once("admin.class.php");
-    class Loader
-    {
-    
-        public $post;
-        public $get;
-    
-        public function __construct($getRequests, $postRequests, $files)
-        {
-            $this->get = $getRequests;
-            $this->post = $postRequests;
-        
-            if($this->get['action'] === "login")
-            {
-                $login = new Login();
-                $result = $login->checkUserPass($postRequests['username'], $postRequests['pass']);
-                echo json_encode(array("loggedin" => $result));
-            }
-            elseif($this->get['action'] === "checklogin")
-            {
-                $session = new Session();
-                echo json_encode(array("loggedin" => $session->isLoggedin()));
-            }
-            elseif($this->get['action'] === "fileupload")
-            {
-                $adminPage = new AdminPage();
-                echo $adminPage->upload($files);
-            }
-            elseif($this->get['action'] === "logout")
-            {
-                login::logout();
-            }
-        }
-    }
+	require_once("login.class.php");
+	require_once("admin.class.php");
+	require_once("api.class.php");
+	class Loader
+	{
+		public function __construct($get, $post, $files)
+		{
+			if ($get['action'] === "api")
+			{
+				$api = new API($get);
+				echo $api->response();
+			}
+			elseif ($get['action'] === "login")
+			{
+				$login = new Login();
+				$result = $login->checkUserPass($post['username'], $post['pass']);
+				echo json_encode(array("loggedin" => $result));
+			}
+			elseif ($get['action'] === "checklogin")
+			{
+				$session = new Session();
+				echo json_encode(array("loggedin" => $session->isLoggedin()));
+			}
+			elseif ($get['action'] === "fileupload")
+			{
+				$adminPage = new AdminPage();
+				echo $adminPage->upload($files);
+			}
+			elseif ($get['action'] === "logout")
+			{
+				login::logout();
+			}
+		}
+	}
 
 ?>
