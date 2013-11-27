@@ -1,5 +1,5 @@
 <?php
-	class api
+	class API
 	{
 		private $request;
 
@@ -11,8 +11,50 @@
         		header("Content-Type: application/json");
 		}
 
+		private function news()
+		{
+			if ($this->request['from'] === "cied")
+			{
+				$feedXML = file_get_contents("http://www.tesyd.teimes.gr/www/index.php?format=feed&type=rss");
+			}
+			else
+			{
+				return json_encode(array("item" => "news", "data" => ""));
+			}
+			$feed = new SimpleXMLElement($feedXML);
+			$response = array("item" => "news", "from" => $this->request['from'], "announces" => array());
+			for ($i = 0; $i < 5; $i++)
+			{
+				$temp = array();
+				$temp['title'] = (string)$feed->channel->item[$i]->title;
+				$temp['description'] = strip_tags((string)$feed->channel->item[$i]->description);
+				$temp['author'] = (string)$feed->channel->item[$i]->author;
+				$temp['pubDate'] = (string)$feed->channel->item[$i]->pubDate;
+				$response['announces'][$i+1] = $temp;
+			}
+			return json_encode($response);
+
+		}
+
 		public function response()
 		{
+			if ($this->request['item'] === "news")
+			{
+				return $this->news();
+			}
+			elseif ($this->request['item'] === "foodmenu" || $this->request['item'] === "buschedule")
+			{
+				return $this->image();
+			}
+			else
+			{
+				return json_encode(array("item" => "not implemented"));
+			}
+		}
+	    
+		private function image()
+		{
+	    
 			$response = array();
 			$extra = "files/";
 			$host = $_SERVER['HTTP_HOST'];
@@ -46,6 +88,7 @@
 				}
 			}
 			return json_encode($response);
-		}
+		} 
+	    	
 	}
 ?>
