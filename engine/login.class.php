@@ -17,8 +17,10 @@
             $rows = $stmt->rowCount();
             if ($rows === 1)
             {
+		$id = $stmt->fetch(PDO::FETCH_ASSOC);
+		$id = $id['id'];
                 $session = new Session();
-                $session->setAdmin($user, $pass);
+                $session->setAdmin($id, $user, $pass);
                 return true;
             }
             return false;

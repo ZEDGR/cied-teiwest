@@ -6,9 +6,9 @@
 		public function __construct($req)
 		{
 			$this->request = $req;
-			/*header("Access-Control-Allow-Orgin: *");
-        		header("Access-Control-Allow-Methods: *");*/
-        		header("Content-Type: application/json");
+			header("Access-Control-Allow-Origin: *");
+        		//header("Access-Control-Allow-Methods: *");
+        		header("Content-Type: application/json; charset=utf-8");
 		}
 
 		private function news()
@@ -21,9 +21,10 @@
 			{
 				return json_encode(array("item" => "news", "data" => ""));
 			}
+			$num = isset($this->request['num']) ? $this->request['num'] : 5;
 			$feed = new SimpleXMLElement($feedXML);
 			$response = array("item" => "news", "from" => $this->request['from'], "announces" => array());
-			for ($i = 0; $i < 5; $i++)
+			for ($i = 0; $i < $num; $i++)
 			{
 				$temp = array();
 				$temp['title'] = (string)$feed->channel->item[$i]->title;

@@ -10,8 +10,9 @@
 
 		}
 
-		function setAdmin($user, $pass)
+		function setAdmin($id, $user, $pass)
 		{
+			$_SESSION['uid'] = $id;
 			$_SESSION['user'] = $user;
 			$_SESSION['pass'] = $pass;
 		}

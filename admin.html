@@ -12,6 +12,32 @@
 		<a id="logout" href="#">Logout</a>
 	</body>
 	<script>
+		function getPosts() {
+			$.ajax({
+				url: "controller.php?action=post&postaction=show",
+				beforeSend: function (xhr) {
+					xhr.overrideMimeType("applcation/json; charset=utf8");
+				}
+			}).done(function (data) {
+				if (data['status'] === "OK") {
+					for (var i = 0; i < data['posts'].length; i++) {
+						var id = data['posts'][i]['id'];
+						var title = data['posts'][i]['title'];
+						var postDate = data['posts'][i]['postDate'];
+						var author = data['posts'][i]['author'];
+						var post = data['posts'][i]['post'];
+						$("body").append("<p><form id='"+id+"' class='posts' method='post'>\
+							<input type='text'  class='title' disabled value='"+title+"'/>\
+							<label>"+postDate+"</label>\
+							<label>"+author+"</label>\
+							<textarea class='post' disabled>"+post+"</textarea>\
+							<button class='edit'>Edit</button> <button class='delete'>Delete</button>\
+							</form></p>");
+					}
+				}
+			});
+		}
+
 	   $(document).ready(function(){
             $("a#logout").click(function(e){
                 e.preventDefault();
@@ -21,7 +47,7 @@
                         xhr.overrideMimeType("application/json; charset=utf8");
                     }
                 }).done(function (data){
-                    if (data["logout"])
+                    if (data['logout'])
                     {
                         localStorage.removeItem("session");    
                         window.location.href = "login.html";
@@ -30,15 +56,15 @@
             });
             
             $("div#main").on("click", "a#menu", function(e) {
-                $("div#main").html("<p>Food!</p><form id='imageupload' method='post' 'enctype='multipart/form-data'><label for='menuform'>Menu: </label><input type='file' name='foodmenu' /><input type='submit' value='Υποβολή'/></form><a id='back' href='#'>Επιστροφή</a>");
+                $("div#main").html("<form id='imageupload' method='post' 'enctype='multipart/form-data'><label for='menuform'>Menu: </label><input type='file' name='foodmenu' /><input type='submit' value='Υποβολή'/></form><a id='back' href='#'>Επιστροφή</a>");
             });
             
             $("div#main").on("click", "a#schedule", function(e) {
-                $("div#main").html("<p>No Route to Host!</p><form id='imageupload' method='post' enctype='multipart/form-data'><label for='scheduleform'>Menu: </label><input type='file' name='buschedule' /><input type='submit' value='Υποβολή'/></form><a id='back' href='#'>Επιστροφή</a>");
+                $("div#main").html("<form id='imageupload' method='post' enctype='multipart/form-data'><label for='scheduleform'>Menu: </label><input type='file' name='buschedule' /><input type='submit' value='Υποβολή'/></form><a id='back' href='#'>Επιστροφή</a>");
             });
             
             $("div#main").on("click", "a#announcements", function(e) {
-                $("div#main").html("<p>Πάρτι</p><form id='announce' method='post'><label for='announcementsform'>Menu: </label><textarea name='announcementsform'></textarea><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
+                $("div#main").html("<form id='announce' method='post'><label for='post'>Title: </label><input type='text' id='title' name='title' size='25'/><br/><label>Post: </label><textarea name='post'></textarea><input type='submit'/></form><a id='back' href='#'>Επιστροφή</a>");
             });
          
         });
@@ -57,14 +83,102 @@
                 alert(data);
             });
         });
+
+        $("div#main").on("submit", "#announce", function(e) {
+        	e.preventDefault();
+        	var formData = new FormData($("form")[0]);
+            $.ajax({
+                url: 'controller.php?action=post&postaction=create',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false
+            }).done(function (data){
+                if (data['created']) {
+                	alert("Successfully Posted!");
+                	$("form.posts").remove();
+                	getPosts(); //I know noob move :P
+                }
+                else {
+                	alert("A problem was occurred!");
+                }
+            });
+
+        });
         
-        $("div#main").on("click", "a#back", function (e) {
-                $("div#main").html(mainMenu);
+        $("div#main").on("DOMNodeInserted", "#announce", function(e) {
+        	getPosts();
         });
 
-        /*$("div#main").on("load", function (e) {
-                $("div#main").html(mainMenu);
-        });*/
+        $("body").on("click", ".edit", function(e) {
+		e.preventDefault();
+	 	$(this).siblings(".title").attr("disabled", false);
+		$(this).siblings(".post").attr("disabled", false);
+		$(this).text('Save');
+		$(this).attr('class', 'save');
+        });
+
+	$("body").on("click", ".save", function(e) {
+		e.preventDefault();
+		var id = $(this).parent().attr('id');
+		var title = $(this).siblings(".title").val();
+		var post = $(this).siblings(".post").val();
+		var data = new FormData();
+		data.append('id', id);
+		data.append('title', title);
+		data.append('post', post);
+		$.ajax({
+			url: 'controller.php?action=post&postaction=edit',
+			type: 'POST',
+			data: data,
+			dataType: 'json',
+			cache: false,
+			contentType: false,
+			processData: false
+		}).done(function (data) {
+			if (data['updated']) {
+				alert("Successfully Edited!");
+			}
+			else {
+				alert("Problem occurred!");
+			}
+		});
+		$("form.posts").remove();
+		getPosts();
+		
+	});
+
+	$("body").on("click", ".delete", function(e) {
+		e.preventDefault();
+		var id = $(this).parent().attr('id');
+		var data = new FormData();
+		data.append('id', id);
+		$.ajax({
+			url: 'controller.php?action=post&postaction=delete',
+			type: 'POST',
+			data: data,
+			dataType: 'json',
+			cache: false,
+			contentType: false,
+			processData: false
+		}).done(function (data) {
+			if (data['deleted']) {
+				alert("Successfully deleted!");
+			}
+			else {
+				alert("Problem occurred!");
+			}
+		});
+		$("form.posts").remove();
+		getPosts();
+	});
+
+        $("div#main").on("click", "a#back", function (e) {
+        	$("form.posts").remove();
+		$("div#main").html(mainMenu);
+        });
             
         $(document).ready(function(e) {
             $.ajax({

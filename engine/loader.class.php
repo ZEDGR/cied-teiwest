@@ -11,6 +11,12 @@
 				$api = new API($get);
 				echo $api->response();
 			}
+			elseif ($get['action'] === "post")
+			{
+				new Session();
+				$adminPage = new AdminPage();
+				echo $adminPage->post($get, $post);
+			}
 			elseif ($get['action'] === "login")
 			{
 				$login = new Login();
