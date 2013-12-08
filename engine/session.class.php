@@ -1,23 +1,23 @@
 <?php
 	class Session
 	{
-		function __construct()
+
+		public function __construct()
 		{
 			if(session_id() === "")
 			{
 				session_start();
 			}
-
 		}
 
-		function setAdmin($id, $user, $pass)
+		public function setAdmin($id, $user, $pass)
 		{
 			$_SESSION['uid'] = $id;
 			$_SESSION['user'] = $user;
 			$_SESSION['pass'] = $pass;
 		}
 
-		function isLoggedin()
+		public function isLoggedin()
 		{
 			if(isset($_SESSION['user']))
 			{
@@ -27,7 +27,7 @@
 			return false;
 		}
 
-		function destroy()
+		public function destroy()
 		{
 			$_SESSION = array();
 			session_destroy();

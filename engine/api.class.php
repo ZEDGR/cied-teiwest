@@ -1,42 +1,19 @@
 <?php
+	require_once("db.class.php");
+
 	class API
 	{
+
 		private $request;
 
 		public function __construct($req)
 		{
 			$this->request = $req;
 			header("Access-Control-Allow-Origin: *");
-        		//header("Access-Control-Allow-Methods: *");
-        		header("Content-Type: application/json; charset=utf-8");
+			//header("Access-Control-Allow-Methods: *");
+			header("Content-Type: application/json; charset=utf-8");
 		}
-
-		private function news()
-		{
-			if ($this->request['from'] === "cied")
-			{
-				$feedXML = file_get_contents("http://www.tesyd.teimes.gr/www/index.php?format=feed&type=rss");
-			}
-			else
-			{
-				return json_encode(array("item" => "news", "data" => ""));
-			}
-			$num = isset($this->request['num']) ? $this->request['num'] : 5;
-			$feed = new SimpleXMLElement($feedXML);
-			$response = array("item" => "news", "from" => $this->request['from'], "announces" => array());
-			for ($i = 0; $i < $num; $i++)
-			{
-				$temp = array();
-				$temp['title'] = (string)$feed->channel->item[$i]->title;
-				$temp['description'] = strip_tags((string)$feed->channel->item[$i]->description);
-				$temp['author'] = (string)$feed->channel->item[$i]->author;
-				$temp['pubDate'] = (string)$feed->channel->item[$i]->pubDate;
-				$response['announces'][$i+1] = $temp;
-			}
-			return json_encode($response);
-
-		}
-
+		
 		public function response()
 		{
 			if ($this->request['item'] === "news")
@@ -52,14 +29,54 @@
 				return json_encode(array("item" => "not implemented"));
 			}
 		}
-	    
+
+		private function news()
+		{
+			if ($this->request['from'] === "cied")
+			{
+				$feedXML = file_get_contents("http://www.tesyd.teimes.gr/www/index.php?format=feed&type=rss");
+				$num = isset($this->request['num']) ? $this->request['num'] : 5;
+				$feed = new SimpleXMLElement($feedXML);
+				$response = array('item' => "news", 'from' => $this->request['from'], 'announces' => array());
+				for ($i = 0; $i < $num; $i++)
+				{
+					$temp = array();
+					$temp['title'] = (string)$feed->channel->item[$i]->title;
+					$temp['description'] = strip_tags((string)$feed->channel->item[$i]->description);
+					$temp['author'] = (string)$feed->channel->item[$i]->author;
+					$temp['pubDate'] = (string)$feed->channel->item[$i]->pubDate;
+					$response['announces'][$i+1] = $temp;
+				}
+				return json_encode($response);
+			}
+			elseif ($this->request['from'] === "studcied")
+			{
+				$db = new db();
+				$sql = "SELECT title, postdate, post, username as author FROM studposts JOIN users ORDER BY postdate DESC";
+				if (isset($this->request['num']))
+				{
+					$num = (int)$this->request['num'];
+					$sql .= " LIMIT :limit";
+					$stmt = $db->prepare($sql);
+					$stmt->bindParam(':limit', $num, PDO::PARAM_INT);
+					$stmt->execute();
+					return json_encode(array('item' => "news", 'from' => "studcied", 'announces' => $stmt->fetchAll()));
+				}
+				$stmt = $db->prepare($sql);
+				$stmt->execute();
+				return json_encode(array('item' => "news", 'from' => "studcied", 'announces' => $stmt->fetchAll()));
+			}
+
+			return json_encode(array('item' => "news", 'data' => ""));
+
+		}
+
 		private function image()
 		{
-	    
 			$response = array();
 			$extra = "files/";
 			$host = $_SERVER['HTTP_HOST'];
-                	$uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+			$uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 			if ($this->request['item'] === "foodmenu")
 			{
 				$extra .= $this->request['item'];
@@ -89,7 +106,7 @@
 				}
 			}
 			return json_encode($response);
-		} 
-	    	
+		}
+
 	}
 ?>

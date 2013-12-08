@@ -1,6 +1,7 @@
 <?php
     class db extends PDO 
     {
+
         private $host = "localhost";
         private $dbname = "tesyd_app";
         private $user = "tesyd_app";

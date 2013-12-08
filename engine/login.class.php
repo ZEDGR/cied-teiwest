@@ -1,8 +1,10 @@
 <?php
     require_once("db.class.php");
     require_once("session.class.php");
+
     class Login
     {
+
         public $db;
 
         public function __construct()

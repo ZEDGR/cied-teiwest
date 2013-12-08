@@ -1,22 +1,23 @@
 <?php
 	require_once("db.class.php");
 	require_once("session.class.php");
+
 	class AdminPage
 	{
 
 		private $session;
 
-		function __construct()
+		public function __construct()
 		{
 			$this->session = new Session();
 		}
 
-		function getName()
+		public function getName()
 		{
 			echo json_encode(array("name" => $_SESSION['user']));
 		}
 
-		function upload($file)
+		public function upload($file)
 		{
 			$filename = '';
 			if (!$this->session->isLoggedin())
@@ -65,7 +66,7 @@
 			return json_encode(array('uploaded' => false, 'reason' => 'Not allowed file extension or folder "files" in the server does not exist!'));
 		}
 
-		function post($get, $input)
+		public function post($get, $input)
 		{
 			if ($get['postaction'] === "show")
 			{

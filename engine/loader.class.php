@@ -2,8 +2,10 @@
 	require_once("login.class.php");
 	require_once("admin.class.php");
 	require_once("api.class.php");
+
 	class Loader
 	{
+
 		public function __construct($get, $post, $files)
 		{
 			if ($get['action'] === "api")
