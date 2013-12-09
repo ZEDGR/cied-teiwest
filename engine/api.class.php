@@ -36,8 +36,12 @@
 			{
 				$feedXML = file_get_contents("http://www.tesyd.teimes.gr/www/index.php?format=feed&type=rss");
 				$num = isset($this->request['num']) ? $this->request['num'] : 5;
+				$num = $this->request['num'] > 10 ? 10 : $this->request['num'];
 				$feed = new SimpleXMLElement($feedXML);
-				$response = array('item' => "news", 'from' => $this->request['from'], 'announces' => array());
+				$response = array('item' => "news", 
+						'from' => $this->request['from'],
+						'num' => $num, 
+						'announces' => array());
 				for ($i = 0; $i < $num; $i++)
 				{
 					$temp = array();
@@ -60,11 +64,17 @@
 					$stmt = $db->prepare($sql);
 					$stmt->bindParam(':limit', $num, PDO::PARAM_INT);
 					$stmt->execute();
-					return json_encode(array('item' => "news", 'from' => "studcied", 'announces' => $stmt->fetchAll()));
+					return json_encode(array('item' => "news", 
+								'from' => "studcied",
+								'num' => $stmt->rowCount(), 
+								'announces' => $stmt->fetchAll(PDO::FETCH_ASSOC)));
 				}
 				$stmt = $db->prepare($sql);
 				$stmt->execute();
-				return json_encode(array('item' => "news", 'from' => "studcied", 'announces' => $stmt->fetchAll()));
+				return json_encode(array('item' => "news",
+							'from' => "studcied",
+							'num' => $stmt->rowCount(), 
+							'announces' => $stmt->fetchAll(PDO::FETCH_ASSOC)));
 			}
 
 			return json_encode(array('item' => "news", 'data' => ""));
