@@ -13,7 +13,7 @@
 			//header("Access-Control-Allow-Methods: *");
 			header("Content-Type: application/json; charset=utf-8");
 		}
-		
+
 		public function response()
 		{
 			if ($this->request['item'] === "news")
@@ -36,7 +36,7 @@
 			{
 				$feedXML = file_get_contents("http://www.tesyd.teimes.gr/www/index.php?format=feed&type=rss");
 				$num = isset($this->request['num']) ? $this->request['num'] : 5;
-				$num = $this->request['num'] > 10 ? 10 : $this->request['num'];
+				$num = $num > 10 ? 10 : $num;
 				$feed = new SimpleXMLElement($feedXML);
 				$response = array('item' => "news", 
 						'from' => $this->request['from'],
