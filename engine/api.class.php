@@ -48,7 +48,7 @@
 					$temp['title'] = (string)$feed->channel->item[$i]->title;
 					$temp['description'] = strip_tags((string)$feed->channel->item[$i]->description);
 					$temp['author'] = (string)$feed->channel->item[$i]->author;
-					$temp['pubDate'] = (string)$feed->channel->item[$i]->pubDate;
+					$temp['pubDate'] = substr((string)$feed->channel->item[$i]->pubDate, 0, 25);
 					$response['announces'][$i+1] = $temp;
 				}
 				return json_encode($response);
