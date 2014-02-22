@@ -38,17 +38,17 @@
 				$num = isset($this->request['num']) ? $this->request['num'] : 5;
 				$num = $num > 10 ? 10 : $num;
 				$feed = new SimpleXMLElement($feedXML);
-				$response = array('item' => "news", 
+				$response = array('item' => "news",
 						'from' => $this->request['from'],
-						'num' => $num, 
+						'num' => $num,
 						'announces' => array());
 				for ($i = 0; $i < $num; $i++)
 				{
 					$temp = array();
 					$temp['title'] = (string)$feed->channel->item[$i]->title;
-					$temp['description'] = strip_tags((string)$feed->channel->item[$i]->description);
+					$temp['post'] = strip_tags((string)$feed->channel->item[$i]->description);
 					$temp['author'] = (string)$feed->channel->item[$i]->author;
-					$temp['pubDate'] = substr((string)$feed->channel->item[$i]->pubDate, 0, 25);
+					$temp['postdate'] = substr((string)$feed->channel->item[$i]->pubDate, 0, 25);
 					$response['announces'][$i+1] = $temp;
 				}
 				return json_encode($response);
