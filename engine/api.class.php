@@ -46,7 +46,7 @@
 				{
 					$temp = array();
 					$temp['title'] = (string)$feed->channel->item[$i]->title;
-					$temp['post'] = strip_tags((string)$feed->channel->item[$i]->description);
+					$temp['post'] = strip_tags((string)$feed->channel->item[$i]->description, "<a>");
 					$temp['author'] = (string)$feed->channel->item[$i]->author;
 					$temp['postdate'] = substr((string)$feed->channel->item[$i]->pubDate, 0, 25);
 					$response['announces'][$i+1] = $temp;
