@@ -34,10 +34,11 @@
 		{
 			if ($this->request['from'] === "cied")
 			{
-				$feedXML = file_get_contents("http://www.tesyd.teimes.gr/www/index.php?format=feed&type=rss");
-				$num = isset($this->request['num']) ? $this->request['num'] : 5;
-				$num = $num > 10 ? 10 : $num;
+				$feedXML = file_get_contents("http://www.cied.teiwest.gr/news?format=feed&type=rss");
 				$feed = new SimpleXMLElement($feedXML);
+				$num = isset($this->request['num']) ? $this->request['num'] : 5;
+				$countedNews = count($feed->channel->item);
+				$num = $num > $countedNews ? $countedNews : $num; 
 				$response = array('item' => "news",
 						'from' => $this->request['from'],
 						'num' => $num,
