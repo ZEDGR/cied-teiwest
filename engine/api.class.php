@@ -30,27 +30,49 @@
 			}
 		}
 
+
+		private function extractNews($num)
+		{
+			$url = "http://www.cied.teiwest.gr/news?format=feed&type=rss";
+			$news = array();
+			$feed = new SimpleXMLElement(file_get_contents($url));
+			$start = 0;
+			$round = 1;
+			$j = 0;
+			for ($i = 0; $i < $num; $i++)
+			{
+				if (($start / 4) > $round)
+				{
+					$round += 1;
+					$j = 0;
+					$feed = new SimpleXMLElement(file_get_contents($url . "&start=" . ($start + 1)));
+				}
+
+				$temp = array();
+				$temp['title'] = (string)$feed->channel->item[$j]->title;
+				$temp['post'] = strip_tags((string)$feed->channel->item[$j]->description, "<a>");
+				$temp['author'] = (string)$feed->channel->item[$j]->author;
+				$temp['postdate'] = substr((string)$feed->channel->item[$j]->pubDate, 0, 25);
+				$news[$i] = $temp;
+				$start += 1;
+				$j += 1; 
+			}
+			return $news;
+		}
+		
 		private function news()
 		{
 			if ($this->request['from'] === "cied")
 			{
-				$feedXML = file_get_contents("http://www.cied.teiwest.gr/news?format=feed&type=rss");
-				$feed = new SimpleXMLElement($feedXML);
 				$num = isset($this->request['num']) ? $this->request['num'] : 5;
-				$countedNews = count($feed->channel->item);
-				$num = $num > $countedNews ? $countedNews : $num; 
+				$announces = $this->extractNews($num);
 				$response = array('item' => "news",
 						'from' => $this->request['from'],
 						'num' => $num,
-						'announces' => array());
+						'announces' => null);
 				for ($i = 0; $i < $num; $i++)
 				{
-					$temp = array();
-					$temp['title'] = (string)$feed->channel->item[$i]->title;
-					$temp['post'] = strip_tags((string)$feed->channel->item[$i]->description, "<a>");
-					$temp['author'] = (string)$feed->channel->item[$i]->author;
-					$temp['postdate'] = substr((string)$feed->channel->item[$i]->pubDate, 0, 25);
-					$response['announces'][$i+1] = $temp;
+					$response['announces'][$i+1] = $announces[$i];
 				}
 				return json_encode($response);
 			}
